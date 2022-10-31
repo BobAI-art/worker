@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# install conda?
+
+conda create -n sd  python=3.10 -y
+conda activate sd

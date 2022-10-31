@@ -1,0 +1,9 @@
+pytorch-lightning==1.6.5
+torchvision==0.14.0
+omegaconf==2.2.3
+einops==0.5.0
+-e git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers
+-e git+https://github.com/openai/CLIP.git@main#egg=clip
+diffusers[training]==0.3.0
+transformers==4.23.1
+kornia==0.6.8
