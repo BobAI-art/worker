@@ -1,3 +1,7 @@
+# tools
+huggingface_hub
+
+# package
 pytorch-lightning==1.6.5
 torchvision==0.14.0
 omegaconf==2.2.3
