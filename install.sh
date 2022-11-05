@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # install conda?
 
-conda create -n sd  python=3.10 -y
+conda create -n sd -y
 conda activate sd
 pip install -r requirements.txt
 # put token to ~/.huggingface/token
-# huggingface-cli login
+
+
+# https://huggingface.co/runwayml/stable-diffusion-v1-5# huggingface-cli login
 git lfs install

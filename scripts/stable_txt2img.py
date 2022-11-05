@@ -42,7 +42,7 @@ def load_model_from_config(config, ckpt, verbose=False):
     return model
 
 
-def main():
+def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -181,7 +181,7 @@ def main():
         type=str, 
         help="Path to a pre-trained embedding manager checkpoint")
 
-    opt = parser.parse_args()
+    opt = parser.parse_args(args)
 
     if opt.laion400m:
         print("Falling back to LAION 400M model...")

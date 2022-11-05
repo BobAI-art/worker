@@ -306,7 +306,6 @@ class FrozenCLIPEmbedder(AbstractEncoder):
 
         self.transformer.forward = transformer_forward.__get__(self.transformer)
 
-
     def freeze(self):
         self.transformer = self.transformer.eval()
         for param in self.parameters():

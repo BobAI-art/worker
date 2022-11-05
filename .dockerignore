@@ -8,4 +8,5 @@ __pycache__
 logs
 src
 model.ckpt
+.git
 model-data
