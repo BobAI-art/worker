@@ -9,10 +9,10 @@ from .helpers import make_datetime
 
 @dataclass(frozen=True)
 class SubjectPhoto:
-    id: str
-    path: str
+    # id: str
+    # path: str
     bucket: str
-    subject_slug: str
+    # subject_slug: str
 
     @property
     def url(self):
