@@ -1,0 +1,146 @@
+{
+  "id": "cla670nnm0001p0v3ak50ifig",
+  "name": "Mysza as a women",
+  "owner_id": "cl9kb0u3d0000p050bmdt2o4s",
+  "subject_slug": "foo-bar",
+  "created": "2022-11-07T02:57:34.402Z",
+  "state": "CREATED",
+  "parent_model_code": "Default",
+  "regularization": {
+    "type": "fetch",
+    "source": "https://github.com/djbielejeski/Stable-Diffusion-Regularization-Images-blonde_woman.git"
+  },
+  "subject": {
+    "id": "cla5ru2di0003p01f8lzfw97b",
+    "slug": "foo-bar",
+    "created": "2022-11-06T19:52:32.646Z",
+    "description": "",
+    "owner_id": "cl9kb0u3d0000p050bmdt2o4s",
+    "subject_photos": [
+      {
+        "id": "cla5zqb8600003b6prjh0wc9q",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqb8600003b6prjh0wc9q",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqd5700013b6p3fp7iiw5",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqd5700013b6p3fp7iiw5",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqn4900033b6pk4b26tbd",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqn4900033b6pk4b26tbd",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqr5c00043b6psy4462p8",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqr5c00043b6psy4462p8",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqtyn00053b6p3xmeawzu",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqtyn00053b6p3xmeawzu",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqvys00063b6p5rf20rmq",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqvys00063b6p5rf20rmq",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zqz1w00073b6pg1olxkwi",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zqz1w00073b6pg1olxkwi",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zr0e300083b6pzwx31gu3",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zr0e300083b6pzwx31gu3",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zr1y600093b6poxa42uk4",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zr1y600093b6poxa42uk4",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zr3i6000a3b6phgtyvyjc",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zr3i6000a3b6phgtyvyjc",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zr4xi000b3b6pdtt2h8od",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zr4xi000b3b6pdtt2h8od",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zr83e000c3b6pg9mtipdd",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zr83e000c3b6pg9mtipdd",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrb3v000d3b6pyjufboch",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrb3v000d3b6pyjufboch",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrchr000e3b6pvbyae4f3",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrchr000e3b6pvbyae4f3",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zre2p000f3b6pxuu8ku3z",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zre2p000f3b6pxuu8ku3z",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrfbm000g3b6pt1dfokaf",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrfbm000g3b6pt1dfokaf",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrgrv000h3b6pv987l7sy",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrgrv000h3b6pv987l7sy",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrk09000i3b6p2zaanea4",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrk09000i3b6p2zaanea4",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla5zrlpa000j3b6py8i57d0y",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla5zrlpa000j3b6py8i57d0y",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      },
+      {
+        "id": "cla74ed2700013b6p1xa1kiuk",
+        "path": "user/cl9kb0u3d0000p050bmdt2o4s/model/cla5ru2di0003p01f8lzfw97b/photo/cla74ed2700013b6p1xa1kiuk",
+        "bucket": "portraits-preview",
+        "subject_slug": "foo-bar"
+      }
+    ]
+  },
+  "parent_model": {
+    "repoId": "runwayml/stable-diffusion-v1-5",
+    "filename": "v1-5-pruned-emaonly.ckpt"
+  }
+}

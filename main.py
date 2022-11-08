@@ -1,4 +1,6 @@
 import argparse, os, sys, datetime, glob, importlib, csv
+from pathlib import Path
+
 from ldm.modules.pruningckptio import PruningCheckpointIO
 import numpy as np
 import time
@@ -21,6 +23,8 @@ from pytorch_lightning.utilities import rank_zero_info
 
 from ldm.data.base import Txt2ImgIterableBaseDataset
 from ldm.util import instantiate_from_config
+
+
 
 ## Un-comment this for windows
 ## os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
@@ -386,7 +390,7 @@ class SetupCallback(Callback):
 class ImageLogger(Callback):
     def __init__(self, batch_frequency, max_images, clamp=True, increase_log_steps=True,
                  rescale=True, disabled=False, log_on_batch_idx=False, log_first_step=False,
-                 log_images_kwargs=None):
+                 log_images_kwargs=None, portraits_model_id=None):
         super().__init__()
         self.rescale = rescale
         self.batch_freq = batch_frequency
@@ -402,6 +406,7 @@ class ImageLogger(Callback):
         self.log_on_batch_idx = log_on_batch_idx
         self.log_images_kwargs = log_images_kwargs if log_images_kwargs else {}
         self.log_first_step = log_first_step
+        self.portraits_model_id = portraits_model_id
 
     @rank_zero_only
     def _testtube(self, pl_module, images, batch_idx, split):
@@ -417,6 +422,8 @@ class ImageLogger(Callback):
     @rank_zero_only
     def log_local(self, save_dir, split, images,
                   global_step, current_epoch, batch_idx):
+        from portraits.clients import upload_image_from_path
+
         root = os.path.join(save_dir, "images", split)
         for k in images:
             grid = torchvision.utils.make_grid(images[k], nrow=4)
@@ -433,6 +440,13 @@ class ImageLogger(Callback):
             path = os.path.join(root, filename)
             os.makedirs(os.path.split(path)[0], exist_ok=True)
             Image.fromarray(grid).save(path)
+
+            if self.portraits_model_id:
+                try:
+                    upload_image_from_path(self.portraits_model_id, "training-progress", image_path=Path(path), prompt=f"Training progress {global_step:05}")
+                except Exception as e:
+                    print("Could not upload image to portraits")
+                    print(e)
 
     def log_img(self, pl_module, batch, batch_idx, split="train"):
         check_idx = batch_idx if self.log_on_batch_idx else pl_module.global_step
@@ -528,7 +542,7 @@ class ModeSwapCallback(Callback):
             self.is_frozen = False
             trainer.optimizers = [pl_module.configure_opt_model()]
 
-if __name__ == "__main__":
+def train(args=sys.argv[1:]):
     # custom parser to specify config files, train, test and debug mode,
     # postfix, resume.
     # `--key value` arguments are interpreted as arguments to the trainer.
@@ -580,7 +594,7 @@ if __name__ == "__main__":
     parser = get_parser()
     parser = Trainer.add_argparse_args(parser)
 
-    opt, unknown = parser.parse_known_args()
+    opt, unknown = parser.parse_known_args(args)
     if opt.name and opt.resume:
         raise ValueError(
             "-n/--name and -r/--resume cannot be specified both."
@@ -896,3 +910,6 @@ if __name__ == "__main__":
         if trainer.global_rank == 0:
             print("Training complete. max_training_steps reached or we blew up.")
             # print(trainer.profiler.summary())
+
+if __name__ == "__main__":
+    train()
