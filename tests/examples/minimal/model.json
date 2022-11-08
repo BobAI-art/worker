@@ -1,0 +1,21 @@
+{
+  "id": "model-id",
+  "name": "Some model name",
+  "owner_id": "owner-id",
+  "parent_model_code": "Default",
+  "regularization": {
+    "type": "fetch",
+    "source": "https://github.com/foo-bar.git"
+  },
+  "subject": {
+    "slug": "the-subject-slug",
+    "subject_photos": [
+      "https://example.com/foo-bar.jpg",
+      "https://example.com/foo-bar-2.jpg"
+    ]
+  },
+  "parent_model": {
+    "repo_id": "runwayml/stable-diffusion-v1-5",
+    "filename": "v1-5-pruned-emaonly.ckpt"
+  }
+}

@@ -1,26 +1,21 @@
 from dataclasses import dataclass
-from datetime import datetime
 import typing as t
 from enum import Enum
-
-from .config import PHOTO_STORE_REGION
-from .helpers import make_datetime
 
 
 @dataclass(frozen=True)
 class SubjectPhoto:
-    # id: str
-    # path: str
-    bucket: str
-    # subject_slug: str
+    url: str
 
     @property
-    def url(self):
-        return f"https://{self.bucket}.{PHOTO_STORE_REGION}.amazonaws.com/{self.path}"
+    def file_name(self):
+        return self.url.split("/")[-1]
 
     @classmethod
-    def from_dict(cls, d):
-        return cls(**d)
+    def from_string(cls, s):
+        return cls(
+            url=s,
+        )
 
 
 @dataclass(frozen=True)
@@ -68,19 +63,15 @@ class State(Enum):
 
 @dataclass(frozen=True)
 class Subject:
-    id: str
     slug: str
-    created: datetime
-    description: str
-    owner_id: str
     subject_photos: t.Sequence[SubjectPhoto]
 
     @classmethod
     def from_dict(cls, d):
         subject_photos = [
-            SubjectPhoto.from_dict(photo) for photo in d.pop("subject_photos")
+            SubjectPhoto.from_string(photo) for photo in d.pop("subject_photos")
         ]
-        return cls(subject_photos=subject_photos, **d)
+        return cls(subject_photos=subject_photos, slug=d["slug"])
 
 
 @dataclass(frozen=True)
@@ -91,7 +82,7 @@ class ParentModel:
     @classmethod
     def from_dict(cls, d):
         return cls(
-            repo_id=d["repoId"],
+            repo_id=d["repo_id"],
             filename=d["filename"],
         )
 
@@ -101,9 +92,6 @@ class Model:
     id: str
     name: str
     owner_id: str
-    subject_slug: str
-    created: datetime
-    state: State
     parent_model_code: str
     regularization: t.Union[GenerateRegularization, FetchRegularization]
     subject: Subject
@@ -111,15 +99,11 @@ class Model:
 
     @classmethod
     def from_dict(cls, d):
-        created = make_datetime(d.pop("created"))
-        state = State(d.pop("state"))
         subject = Subject.from_dict(d.pop("subject"))
         regularization_class = REGULARIZATION_CLASSES[d["regularization"]["type"]]
         regularization = regularization_class.from_dict(d.pop("regularization"))
         parent_model = ParentModel.from_dict(d.pop("parent_model"))
         return cls(
-            created=created,
-            state=state,
             subject=subject,
             regularization=regularization,
             parent_model=parent_model,

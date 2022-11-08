@@ -132,5 +132,6 @@ def test_train_model(fake_io: FakeIO, example):
             image_generator=fake_io.image_generator,
             mkdir=fake_io.mkdir,
         )
-
+    if "\n".join(fake_io.commands) != example.expected_commands:
+        print("\n".join(fake_io.commands))
     assert "\n".join(fake_io.commands) == example.expected_commands

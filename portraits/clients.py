@@ -43,8 +43,8 @@ def download_photos(path: Path, photos: t.Sequence[SubjectPhoto], save_url: UrlS
     path.mkdir(parents=True, exist_ok=True)
 
     for photo in photos:
-        photo_path = path / f"{photo.id}.png"
+        photo_path = path / photo.file_name
         if photo_path.exists():
-            print(f"ℹ️  Photo {photo.id} already downloaded")
+            print(f"ℹ️  Photo {photo.file_name} already downloaded")
             continue
         save_url(photo.url, photo_path)
