@@ -27,7 +27,7 @@ def make_regularizations(
         return
 
     pull_s3(path.as_posix(), run=run)
-    if (path / "00199.jpg").exists():
+    if (path / "samples" / "00199.jpg").exists():
         print(f"ℹ️  Regularizations for {model.id} already downloaded")
         return
 
@@ -53,9 +53,9 @@ def make_regularizations(
             "--skip_grid",
         ]
     )
-    run(["mv",  (path / "samples" / "*").as_posix(), path.as_posix()])
 
     push_s3(path.as_posix(), run=run)
+    return path / "samples"
 
 
 def train_model(
@@ -159,5 +159,7 @@ def do_train(
             "--token",
             model.subject.slug,
             "--no-test",
+            "--portraits-model-id",
+            model.id,
         ]
     )

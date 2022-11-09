@@ -1,4 +1,4 @@
-import argparse, os, sys, datetime, glob, importlib, csv
+import argparse, os, sys, datetime, glob
 from pathlib import Path
 
 from ldm.modules.pruningckptio import PruningCheckpointIO
@@ -11,13 +11,13 @@ import pytorch_lightning as pl
 
 from packaging import version
 from omegaconf import OmegaConf
-from torch.utils.data import random_split, DataLoader, Dataset, Subset
+from torch.utils.data import random_split, DataLoader, Dataset
 from functools import partial
 from PIL import Image
 
 from pytorch_lightning import seed_everything
 from pytorch_lightning.trainer import Trainer
-from pytorch_lightning.callbacks import ModelCheckpoint, Callback, LearningRateMonitor
+from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.utilities.distributed import rank_zero_only
 from pytorch_lightning.utilities import rank_zero_info
 
@@ -201,7 +201,8 @@ def get_parser(**parser_kwargs):
     parser.add_argument("--init_words", 
         type=str, 
         help="Comma separated list of words used to initialize the embeddigs for training.")
-
+    parser.add_argument("--portraits-model-id",
+                        type=str, help="ID for the portraits model, to upload partial images")
     return parser
 
 
@@ -449,6 +450,7 @@ class ImageLogger(Callback):
                     print(e)
 
     def log_img(self, pl_module, batch, batch_idx, split="train"):
+
         check_idx = batch_idx if self.log_on_batch_idx else pl_module.global_step
         if (self.check_frequency(check_idx) and  # batch_idx % self.batch_freq == 0
                 hasattr(pl_module, "log_images") and
@@ -541,6 +543,7 @@ class ModeSwapCallback(Callback):
         if trainer.global_step > self.swap_step and self.is_frozen:
             self.is_frozen = False
             trainer.optimizers = [pl_module.configure_opt_model()]
+
 
 def train(args=sys.argv[1:]):
     # custom parser to specify config files, train, test and debug mode,
@@ -772,7 +775,8 @@ def train(args=sys.argv[1:]):
                 "params": {
                     "batch_frequency": 750,
                     "max_images": 4,
-                    "clamp": True
+                    "clamp": True,
+                    "portraits_model_id": opt.portraits_model_id,
                 }
             },
             "learning_rate_logger": {
