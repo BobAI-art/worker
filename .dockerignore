@@ -10,3 +10,7 @@ src
 model.ckpt
 .git
 model-data
+model.ckpt
+model-data
+regularizations
+
