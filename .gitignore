@@ -9,3 +9,4 @@ logs
 src
 model.ckpt
 model-data
+regularizations

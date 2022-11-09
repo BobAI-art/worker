@@ -35,6 +35,7 @@ class GenerateRegularization:
 @dataclass(frozen=True)
 class FetchRegularization:
     source: str
+    regularization: str
 
     @property
     def code(self):
@@ -46,7 +47,7 @@ class FetchRegularization:
 
     @classmethod
     def from_dict(cls, d: t.Mapping[str, t.Any]):
-        return cls(source=d["source"])
+        return cls(source=d["source"], regularization=d['regularization'])
 
 
 REGULARIZATION_CLASSES = {

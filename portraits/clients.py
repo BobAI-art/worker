@@ -1,4 +1,5 @@
 import base64
+import os
 from pathlib import Path
 
 import requests
@@ -31,7 +32,10 @@ def upload_image(model_id: str, category: str, prompt: t.Optional[str], image_co
 
 def get_model(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[Model]:
     url = f"{base_url}/api/model/train"
-    response = requests.post(url)
+    if os.environ.get('PORTRAITS_DRY_RUN', 'false') == 'true':
+        response = requests.get(url)
+    else:
+        response = requests.post(url)
     response.raise_for_status()
     json = response.json()
     if not json:

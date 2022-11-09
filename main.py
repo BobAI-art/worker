@@ -696,6 +696,8 @@ def train(args=sys.argv[1:]):
         config.data.params.validation.params.placeholder_token = opt.token
         config.data.params.validation.params.data_root = opt.data_root
 
+
+
         if opt.actual_resume:
             model = load_model_from_config(config, opt.actual_resume)
         else:

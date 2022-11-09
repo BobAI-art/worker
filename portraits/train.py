@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from .clients import get_model, download_photos, release_model
@@ -23,7 +24,11 @@ def make_regularizations(
     regularization = model.regularization
 
     if isinstance(regularization, FetchRegularization):
-        run(["git clone", regularization.source, path.as_posix()])
+        if (path / "samples").exists():
+            print("ℹ️  Regularizations already downloaded")
+            return
+        run(["git", "clone", regularization.source, path.as_posix()])
+        run(["mv", (path / regularization.prompt).as_posix(), (path / "samples").as_posix()])
         return
 
     pull_s3(path.as_posix(), run=run)
@@ -114,11 +119,13 @@ def pure_train_model(
         print("ℹ️  Uploading model to file store")
         upload_model(model, run=run, get_last_checkpoint=get_last_checkpoint)
     except Exception as e:
-        print(f"❌  Error while training model {model.name} ({model.id}): {e}")
-        release_model(model, error=str(e))
+        print(f"❌  Error while training PORTRAITS_DRY_RUNmodel {model.name} ({model.id}): {e}")
+        if os.environ.get('PORTRAITS_DRY_RUN', 'false') != 'true':
+            release_model(model, error=str(e))
         raise
     else:
-        release_model(model)
+        if os.environ.get('PORTRAITS_DRY_RUN', 'false') != 'true':
+            release_model(model)
         print(f"✅  Model {model.name} ({model.id}) trained")
         run(["rm", "-rf", (ROOT / "logs").as_posix()])
 
@@ -136,9 +143,7 @@ def upload_model(
 def do_train(
     parent_model_path, model: Model, train: t.Callable[[t.Sequence[str]], None]
 ):
-    # TODO: upload progress photo every 200 steps
-    train(
-        [
+    train_params = [
             "--base",
             "configs/stable-diffusion/v1-finetune_unfrozen.yaml",
             "-t",
@@ -162,4 +167,5 @@ def do_train(
             "--portraits-model-id",
             model.id,
         ]
-    )
+    print("ℹ️  Start traing train with params", train_params)
+    train(train_params)
