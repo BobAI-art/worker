@@ -22,7 +22,6 @@ def pull_s3(path: str, run: io.CommandRunner):
             "sync",
             f"s3://{config.MODEL_STORE_BUCKET_NAME}/{path_on_s3}",
             path,
-            "--no-progress",
             "--region",
             config.MODEL_STORE_REGION,
             "--exclude",
@@ -42,7 +41,6 @@ def copy_to_s3(path: str, run: io.CommandRunner):
             "cp",
             path,
             f"s3://{config.MODEL_STORE_BUCKET_NAME}/{path_on_s3}",
-            "--no-progress",
             "--region",
             config.MODEL_STORE_REGION,
         ]
@@ -60,7 +58,6 @@ def push_s3(path: str, run: io.CommandRunner):
             "sync",
             path,
             f"s3://{config.MODEL_STORE_BUCKET_NAME}/{path_on_s3}",
-            "--no-progress",
             "--region",
             config.MODEL_STORE_REGION,
             "--exclude",

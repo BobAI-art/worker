@@ -169,3 +169,7 @@ def do_train(
         ]
     print("ℹ️  Start traing train with params", train_params)
     train(train_params)
+
+
+if __name__ == "__main__":
+    train_model()

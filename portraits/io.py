@@ -6,8 +6,6 @@ import typing as t
 import requests
 from typing_extensions import Protocol
 
-import main
-from scripts import stable_txt2img
 
 
 class UrlSaver(Protocol):
@@ -22,7 +20,11 @@ def save_url(url: str, path: Path):
 
 CommandRunner = t.Callable[[t.Sequence[str]], None]
 
-run: CommandRunner = subprocess.run  # type: ignore
+
+def run(args: t.Sequence[str]):
+    print(f"ℹ️  Running: {' '.join(args)}")
+    subprocess.run(args, check=True)
+
 
 Mkdirer = t.Callable[[Path], None]
 
@@ -33,10 +35,17 @@ def mkdir(path: Path):
 
 Trainer = t.Callable[[t.Sequence[str]], None]
 
-train = main.train
+def train(args: t.Sequence[str]):
+    import main
+    return main.train(args)
 
 ImageGenerator = t.Callable[[t.Sequence[str]], None]
-image_generator = stable_txt2img.main
+
+
+def image_generator(args: t.Sequence[str], external_prompts=None, on_prompt_save=None):
+    from scripts import stable_txt2img
+    return stable_txt2img.main(args, external_prompts=external_prompts, on_prompt_save=on_prompt_save)
+
 
 LastCheckpointGetter = t.Callable[[], str]
 

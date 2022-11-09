@@ -110,3 +110,32 @@ class Model:
             parent_model=parent_model,
             **d,
         )
+
+
+@dataclass(frozen=True)
+class Prompt:
+    id: str
+    class_: str
+    prompt: str
+    subject: str
+
+    def render(self):
+        return self.prompt.replace("<MODEL>", f"{self.subject} {self.class_}")
+
+    @classmethod
+    def from_dict(cls, d):
+        class_ = d.pop("class")
+        return cls(**d,
+                   class_=class_)
+
+
+@dataclass(frozen=True)
+class PromptResponse:
+    model_id: str
+    owner_id: str
+    prompts: t.Sequence[Prompt]
+
+    @classmethod
+    def from_dict(cls, d):
+        prompts = [Prompt.from_dict(prompt) for prompt in d.pop("prompts")]
+        return cls(prompts=prompts, **d)

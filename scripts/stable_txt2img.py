@@ -1,4 +1,6 @@
 import argparse, os, sys, glob
+from typing import Callable
+
 import torch
 import numpy as np
 from omegaconf import OmegaConf
@@ -37,12 +39,13 @@ def load_model_from_config(config, ckpt, verbose=False):
         print("unexpected keys:")
         print(u)
 
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
     model.eval()
     return model
 
 
-def main(args=sys.argv[1:]):
+def main(args=sys.argv[1:], external_prompts=None, on_prompt_save: Callable=None):
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -208,6 +211,7 @@ def main(args=sys.argv[1:]):
 
     batch_size = opt.n_samples
     n_rows = opt.n_rows if opt.n_rows > 0 else batch_size
+
     if not opt.from_file:
         prompt = opt.prompt
         assert prompt is not None
@@ -229,13 +233,17 @@ def main(args=sys.argv[1:]):
         start_code = torch.randn([opt.n_samples, opt.C, opt.H // opt.f, opt.W // opt.f], device=device)
 
     precision_scope = autocast if opt.precision=="autocast" else nullcontext
+
+    if external_prompts:
+        data = external_prompts
+
     with torch.no_grad():
-        with precision_scope("cuda"):
+        with precision_scope("cuda" if torch.cuda.is_available() else "cpu"):
             with model.ema_scope():
                 tic = time.time()
                 all_samples = list()
                 for n in trange(opt.n_iter, desc="Sampling"):
-                    for prompts in tqdm(data, desc="data"):
+                    for prompt_no, prompts in enumerate(tqdm(data, desc="data")):
                         uc = None
                         if opt.scale != 1.0:
                             uc = model.get_learned_conditioning(batch_size * [""])
@@ -259,9 +267,13 @@ def main(args=sys.argv[1:]):
                         if not opt.skip_save:
                             for x_sample in x_samples_ddim:
                                 x_sample = 255. * rearrange(x_sample.cpu().numpy(), 'c h w -> h w c')
-                                Image.fromarray(x_sample.astype(np.uint8)).save(
-                                    os.path.join(sample_path, f"{base_count:05}.jpg"))
+                                image_path = os.path.join(sample_path, f"{base_count:05}.jpg")
+                                Image.fromarray(x_sample.astype(np.uint8)).save(image_path)
+
                                 base_count += 1
+
+                                if on_prompt_save:
+                                    on_prompt_save(prompt_no, image_path)
 
                         if not opt.skip_grid:
                             all_samples.append(x_samples_ddim)

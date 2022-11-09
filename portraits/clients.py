@@ -7,6 +7,8 @@ import typing as t
 from . import config
 from .types import Model, SubjectPhoto
 from .io import UrlSaver
+from .types import Prompt
+from .types import PromptResponse
 
 
 def release_model(model: Model, error: str = None):
@@ -29,6 +31,18 @@ def upload_image(model_id: str, category: str, prompt: t.Optional[str], image_co
         return None
     return json
 
+
+def get_prompts(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[PromptResponse]:
+    url = f"{base_url}/api/prompts/queue"
+    if os.environ.get('PORTRAITS_DRY_RUN', 'false') == 'true':
+        response = requests.get(url)
+    else:
+        response = requests.post(url)
+    response.raise_for_status()
+    json = response.json()
+    if not json:
+        return None
+    return PromptResponse.from_dict(json)
 
 def get_model(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[Model]:
     url = f"{base_url}/api/model/train"
