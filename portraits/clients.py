@@ -22,6 +22,13 @@ def upload_image_from_path(model_id: str, category: str, prompt: t.Optional[str]
     upload_image(model_id=model_id, category=category, prompt=prompt,
                  image_content=base64.b64encode(image_path.read_bytes()).decode(), base_url=base_url)
 
+def delete_prompt(prompt_id: str, base_url=config.PORTRAITS_BASE_URL):
+    url = f"{base_url}/api/prompts/{prompt_id}"
+    response = requests.delete(url)
+    response.raise_for_status()
+    return True
+
+
 def upload_image(model_id: str, category: str, prompt: t.Optional[str], image_content: str,base_url=config.PORTRAITS_BASE_URL):
     url = f"{base_url}/api/model/{model_id}/image"
     response = requests.post(url, json={"category": category, "prompt": prompt, "image_content": image_content})

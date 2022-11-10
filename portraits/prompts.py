@@ -1,15 +1,14 @@
 from functools import partial
 from pathlib import Path
-from typing import List
+from time import sleep
 
 from portraits import io
-from portraits.clients import get_prompts
+from portraits.clients import get_prompts, delete_prompt
 from portraits.clients import upload_image_from_path
 from portraits.io import CommandRunner
 from portraits.paths import make_model_path
 from portraits.paths import prompts_outdir
 from portraits.store import pull_s3
-from portraits.types import Prompt
 from portraits.types import PromptResponse
 
 
@@ -62,6 +61,7 @@ def on_prompt_save(idx: int, path: str, prompts: PromptResponse):
         prompt=the_prompt.prompt,
         image_path=Path(path),
     )
+    delete_prompt(the_prompt.id)
 
 
 def process_prompts():
@@ -73,4 +73,9 @@ def process_prompts():
 
 
 if __name__ == "__main__":
-    process_prompts()
+    while True:
+        try:
+            process_prompts()
+        except Exception as e:
+            print(f"❌  Error: {e}")
+        sleep(1)

@@ -167,7 +167,7 @@ def main(args=sys.argv[1:], external_prompts=None, on_prompt_save: Callable=None
     parser.add_argument(
         "--seed",
         type=int,
-        default=42,
+        default=-1,
         help="the seed (for reproducible sampling)",
     )
     parser.add_argument(

@@ -1,0 +1,10 @@
+setup.ilm.enabled: false
+filebeat.inputs:
+  - type: log
+    # Specify the path of the system log files to be sent to Axiom deployment.
+    paths:
+      - /tmp/output.log
+output.elasticsearch:
+  hosts: ['https://cloud.axiom.co:443/api/v1/datasets/stdout/elastic']
+  # token should be an API token
+  api_key: 'axiom:xaat-679e6013-22dd-459d-a441-5f9f6a320a6a'

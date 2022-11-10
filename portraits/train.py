@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from time import sleep
 
 from .clients import get_model, download_photos, release_model
 from . import huggingface
@@ -119,7 +120,7 @@ def pure_train_model(
         print("ℹ️  Uploading model to file store")
         upload_model(model, run=run, get_last_checkpoint=get_last_checkpoint)
     except Exception as e:
-        print(f"❌  Error while training PORTRAITS_DRY_RUNmodel {model.name} ({model.id}): {e}")
+        print(f"❌  Error while training model {model.name} ({model.id}): {e}")
         if os.environ.get('PORTRAITS_DRY_RUN', 'false') != 'true':
             release_model(model, error=str(e))
         raise
@@ -172,4 +173,9 @@ def do_train(
 
 
 if __name__ == "__main__":
-    train_model()
+    while True:
+        try:
+            train_model()
+        except Exception as e:
+            print(f"❌  Error: {e}")
+        sleep(1)
