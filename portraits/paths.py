@@ -1,24 +1,24 @@
 from pathlib import Path
 
 from .config import ROOT
-from .types import Model
+from .types import Depiction
 
 
 def make_model_path(owner_id: str, model_id: str):
     return ROOT / "model-data" / owner_id / model_id
 
-def prompts_outdir(owner_id: str, model_id: str) -> Path:
-    return make_model_path(owner_id, model_id) / "prompts"
+def generated_photos_outdir() -> Path:
+    return ROOT / "generated-photos"
 
-def model_path(model: Model) -> Path:
+def model_path(model: Depiction) -> Path:
     return make_model_path(model.owner_id, model.id)
 
 
-def regularizations_path(model: Model) -> Path:
+def regularizations_path(model: Depiction) -> Path:
     return (
-        ROOT / "regularizations" / model.parent_model_code / model.regularization.code
+        ROOT / "regularizations" / model.style_slug / model.regularization.code
     )
 
 
-def photos_path(model: Model) -> Path:
+def photos_path(model: Depiction) -> Path:
     return model_path(model) / "photos"

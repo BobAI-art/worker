@@ -424,7 +424,6 @@ class ImageLogger(Callback):
     @rank_zero_only
     def log_local(self, save_dir, split, images,
                   global_step, current_epoch, batch_idx):
-        from portraits.clients import upload_image_from_path
 
         root = os.path.join(save_dir, "images", split)
         for k in images:
@@ -443,12 +442,12 @@ class ImageLogger(Callback):
             os.makedirs(os.path.split(path)[0], exist_ok=True)
             Image.fromarray(grid).save(path)
 
-            if self.portraits_model_id:
-                try:
-                    upload_image_from_path(self.portraits_model_id, "training-progress", image_path=Path(path), prompt=f"Training progress {global_step:05}")
-                except Exception as e:
-                    print("Could not upload image to portraits")
-                    print(e)
+            # if self.portraits_model_id:
+            #     try:
+            #         upload_image_from_path(self.portraits_model_id, "training-progress", image_path=Path(path), prompt=f"Training progress {global_step:05}")
+            #     except Exception as e:
+            #         print("Could not upload image to portraits")
+            #         print(e)
 
     def log_img(self, pl_module, batch, batch_idx, split="train"):
 
@@ -917,6 +916,7 @@ def train(args=sys.argv[1:]):
         if trainer.global_rank == 0:
             print("Training complete. max_training_steps reached or we blew up.")
             # print(trainer.profiler.summary())
+
 
 if __name__ == "__main__":
     train()

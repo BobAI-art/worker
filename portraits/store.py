@@ -7,8 +7,10 @@ def get_s3_path(path: str) -> str:
     root = config.ROOT.as_posix()
     if not path.startswith(root):
         print("❌  Path must be a subpath of the root")
+        exit(1)
     assert path.startswith(root)
     return path[len(root) + 1 :]
+
 
 
 def pull_s3(path: str, run: io.CommandRunner):

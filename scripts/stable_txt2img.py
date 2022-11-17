@@ -132,7 +132,7 @@ def main(args=sys.argv[1:], external_prompts=None, on_prompt_save: Callable=None
     parser.add_argument(
         "--n_samples",
         type=int,
-        default=3,
+        default=1,
         help="how many samples to produce for each given prompt. A.k.a. batch size",
     )
     parser.add_argument(
@@ -177,7 +177,6 @@ def main(args=sys.argv[1:], external_prompts=None, on_prompt_save: Callable=None
         choices=["full", "autocast"],
         default="autocast"
     )
-
 
     parser.add_argument(
         "--embedding_path", 
@@ -272,8 +271,8 @@ def main(args=sys.argv[1:], external_prompts=None, on_prompt_save: Callable=None
 
                                 base_count += 1
 
-                                if on_prompt_save:
-                                    on_prompt_save(prompt_no, image_path)
+                            if on_prompt_save:
+                                on_prompt_save(prompt_no, image_path)
 
                         if not opt.skip_grid:
                             all_samples.append(x_samples_ddim)

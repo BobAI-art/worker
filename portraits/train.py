@@ -1,4 +1,5 @@
 import os
+import traceback
 from pathlib import Path
 from time import sleep
 
@@ -9,13 +10,13 @@ from .config import ROOT
 from .io import Mkdirer
 from .paths import regularizations_path, photos_path, model_path
 from .store import pull_s3, push_s3, copy_to_s3
-from .types import Model, FetchRegularization, GenerateRegularization
+from .types import Depiction, FetchRegularization, GenerateRegularization
 import typing as t
 
 
-def make_regularizations(
-    parent_model_path: str,
-    model: Model,
+def     make_regularizations(
+    style_path: str,
+    model: Depiction,
     run: io.CommandRunner,
     mkdir: Mkdirer,
     image_generator: io.ImageGenerator,
@@ -51,7 +52,7 @@ def make_regularizations(
             "--ddim_steps",
             "50",
             "--ckpt",
-            parent_model_path,
+            style_path,
             "--prompt",
             regularization.prompt,
             "--outdir",
@@ -104,18 +105,18 @@ def pure_train_model(
             photos_path(model), model.subject.subject_photos, save_url=save_url
         )
         print("ℹ️  Downloading parent model")
-        parent_model_path = model_dowloader(model.parent_model)
-        print(f"ℹ️  Parent model downloaded to {parent_model_path}")
+        style_path = model_dowloader(model.style)
+        print(f"ℹ️  Parent model downloaded to {style_path}")
         print("ℹ️  Generating Regularization images")
         make_regularizations(
-            parent_model_path,
+            style_path,
             model,
             run=run,
             image_generator=image_generator,
             mkdir=mkdir,
         )
         print("ℹ️  Training model")
-        do_train(parent_model_path, model, train=train)
+        do_train(style_path, model, train=train)
         print("ℹ️  Model trained")
         print("ℹ️  Uploading model to file store")
         upload_model(model, run=run, get_last_checkpoint=get_last_checkpoint)
@@ -132,7 +133,7 @@ def pure_train_model(
 
 
 def upload_model(
-    model: Model, run: io.CommandRunner, get_last_checkpoint: io.LastCheckpointGetter
+    model: Depiction, run: io.CommandRunner, get_last_checkpoint: io.LastCheckpointGetter
 ):
     path = model_path(model)
     checkpoint_path = get_last_checkpoint()
@@ -142,7 +143,7 @@ def upload_model(
 
 
 def do_train(
-    parent_model_path, model: Model, train: t.Callable[[t.Sequence[str]], None]
+    parent_model_path, model: Depiction, train: t.Callable[[t.Sequence[str]], None]
 ):
     train_params = [
             "--base",
@@ -173,9 +174,13 @@ def do_train(
 
 
 if __name__ == "__main__":
-    while True:
-        try:
-            train_model()
-        except Exception as e:
-            print(f"❌  Error: {e}")
-        sleep(1)
+    if os.environ.get('PORTRAITS_DRY_RUN') == 'true':
+        train_model()
+    else:
+        while True:
+            try:
+                train_model()
+            except Exception as e:
+                print(f"❌  Error: {e}")
+                traceback.print_exc()
+            sleep(1)

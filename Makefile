@@ -10,5 +10,5 @@ push:
 train:
 	python -m portraits.train
 
-prompts:
-	python -m portraits.prompts
+photos:
+	python -m portraits.photos

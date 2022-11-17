@@ -10,7 +10,7 @@ import requests_mock
 from portraits.config import ROOT
 from portraits.store import pull_s3
 from portraits.train import pure_train_model
-from portraits.types import Model, ParentModel
+from portraits.types import Depiction, Style
 
 TESTS_PATH = Path(__file__).parent
 EXAMPLES = TESTS_PATH / "examples"
@@ -20,7 +20,7 @@ ALL_EXAMPLES = glob.glob(str(EXAMPLES / "*"))
 
 @dataclass(frozen=True)
 class Example:
-    model: Model
+    model: Depiction
     json: str
     expected_commands: str
 
@@ -29,15 +29,15 @@ class Example:
 def example(request):
     with (Path(request.param) / "model.json").open("r") as f:
         model_json = f.read()
-        model = Model.from_dict(json.loads(model_json))
+        model = Depiction.from_dict(json.loads(model_json))
     with (Path(request.param) / "expected.sh").open("r") as f:
         expected_commands = f.read().strip()
     return Example(model=model, json=model_json, expected_commands=expected_commands)
 
 
 @pytest.fixture
-def model(example) -> Model:
-    return Model.from_dict(json.loads(example.json))
+def model(example) -> Depiction:
+    return Depiction.from_dict(json.loads(example.json))
 
 
 def test_get_models():
@@ -86,7 +86,7 @@ class FakeIO:
         self.run(["wget", url, "-O", path.as_posix()])
         return path
 
-    def model_downloaded(self, parent_model: ParentModel):
+    def model_downloaded(self, parent_model: Style):
         self.run(
             [
                 "python",

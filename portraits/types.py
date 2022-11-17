@@ -76,7 +76,7 @@ class Subject:
 
 
 @dataclass(frozen=True)
-class ParentModel:
+class Style:
     repo_id: str
     filename: str
 
@@ -89,53 +89,65 @@ class ParentModel:
 
 
 @dataclass(frozen=True)
-class Model:
+class Depiction:
     id: str
     name: str
     owner_id: str
-    parent_model_code: str
+    style_slug: str
     regularization: t.Union[GenerateRegularization, FetchRegularization]
     subject: Subject
-    parent_model: ParentModel
+    style: Style
 
     @classmethod
     def from_dict(cls, d):
         subject = Subject.from_dict(d.pop("subject"))
         regularization_class = REGULARIZATION_CLASSES[d["regularization"]["type"]]
         regularization = regularization_class.from_dict(d.pop("regularization"))
-        parent_model = ParentModel.from_dict(d.pop("parent_model"))
+        style = Style.from_dict(d.pop("style"))
         return cls(
             subject=subject,
             regularization=regularization,
-            parent_model=parent_model,
+            style=style,
             **d,
         )
 
 
 @dataclass(frozen=True)
-class Prompt:
+class Photo:
     id: str
-    class_: str
-    prompt: str
-    subject: str
-
-    def render(self):
-        return self.prompt.replace("<MODEL>", f"{self.subject} {self.class_}")
+    prompts: t.List[str]
 
     @classmethod
     def from_dict(cls, d):
-        class_ = d.pop("class")
-        return cls(**d,
-                   class_=class_)
+        return cls(**d)
 
 
 @dataclass(frozen=True)
-class PromptResponse:
-    model_id: str
-    owner_id: str
-    prompts: t.Sequence[Prompt]
+class PhotoSourceAWS:
+    path: str
 
     @classmethod
     def from_dict(cls, d):
-        prompts = [Prompt.from_dict(prompt) for prompt in d.pop("prompts")]
-        return cls(prompts=prompts, **d)
+        return cls(**d)
+
+
+PhotoSource = t.Union[Style, PhotoSourceAWS]
+
+
+@dataclass(frozen=True)
+class PhotosResponse:
+    source: PhotoSource
+    photos: t.Sequence[Photo]
+
+    @classmethod
+    def from_dict(cls, d):
+        photos = [Photo.from_dict(photo) for photo in d.pop("photos")]
+        source = d.pop("source")
+        source_type = source.pop("source")
+        if source_type == "huggingface":
+            source = Style.from_dict(source)
+        elif source_type == "aws":
+            source = PhotoSourceAWS.from_dict(source)
+        else:
+            raise ValueError(f"Unknown source type: {source['source']}")
+        return cls(photos=photos, source=source)

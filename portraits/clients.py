@@ -1,46 +1,32 @@
 import base64
 import os
+import typing as t
 from pathlib import Path
 
 import requests
-import typing as t
+
 from . import config
-from .types import Model, SubjectPhoto
 from .io import UrlSaver
-from .types import Prompt
-from .types import PromptResponse
+from .types import Depiction, SubjectPhoto
+from .types import PhotosResponse
 
 
-def release_model(model: Model, error: str = None):
+def release_model(model: Depiction, error: str = None):
     url = f"{config.PORTRAITS_BASE_URL}/api/model/{model.id}/release"
     response = requests.post(url, json={"error": error})
     response.raise_for_status()
     assert response.json() == {"success": True}
 
 
-def upload_image_from_path(model_id: str, category: str, prompt: t.Optional[str], image_path: Path,base_url=config.PORTRAITS_BASE_URL):
-    upload_image(model_id=model_id, category=category, prompt=prompt,
-                 image_content=base64.b64encode(image_path.read_bytes()).decode(), base_url=base_url)
-
-def delete_prompt(prompt_id: str, base_url=config.PORTRAITS_BASE_URL):
-    url = f"{base_url}/api/prompts/{prompt_id}"
-    response = requests.delete(url)
+def upload_photo(photo_id: str, photo_path: Path, base_url=config.PORTRAITS_BASE_URL):
+    photo_content = base64.b64encode(photo_path.read_bytes()).decode()
+    url = f"{base_url}/api/photo/{photo_id}"
+    response = requests.post(url, json={"photo_content": photo_content})
     response.raise_for_status()
-    return True
 
 
-def upload_image(model_id: str, category: str, prompt: t.Optional[str], image_content: str,base_url=config.PORTRAITS_BASE_URL):
-    url = f"{base_url}/api/model/{model_id}/image"
-    response = requests.post(url, json={"category": category, "prompt": prompt, "image_content": image_content})
-    response.raise_for_status()
-    json = response.json()
-    if not json:
-        return None
-    return json
-
-
-def get_prompts(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[PromptResponse]:
-    url = f"{base_url}/api/prompts/queue"
+def get_photos(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[PhotosResponse]:
+    url = f"{base_url}/api/photo"
     if os.environ.get('PORTRAITS_DRY_RUN', 'false') == 'true':
         response = requests.get(url)
     else:
@@ -49,9 +35,10 @@ def get_prompts(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[PromptResponse
     json = response.json()
     if not json:
         return None
-    return PromptResponse.from_dict(json)
+    return PhotosResponse.from_dict(json)
 
-def get_model(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[Model]:
+
+def get_model(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[Depiction]:
     url = f"{base_url}/api/model/train"
     if os.environ.get('PORTRAITS_DRY_RUN', 'false') == 'true':
         response = requests.get(url)
@@ -61,7 +48,7 @@ def get_model(base_url=config.PORTRAITS_BASE_URL) -> t.Optional[Model]:
     json = response.json()
     if not json:
         return None
-    return Model.from_dict(json)
+    return Depiction.from_dict(json)
 
 
 def download_photos(path: Path, photos: t.Sequence[SubjectPhoto], save_url: UrlSaver):
