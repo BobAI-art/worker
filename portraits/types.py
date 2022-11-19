@@ -115,7 +115,12 @@ class Depiction:
 @dataclass(frozen=True)
 class Photo:
     id: str
-    prompts: t.List[str]
+    prompt: str
+    ddim: int
+    width: int
+    height: int
+    guidance: float
+    seed: int
 
     @classmethod
     def from_dict(cls, d):

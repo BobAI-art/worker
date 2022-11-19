@@ -8,6 +8,7 @@ from portraits import io
 from portraits.clients import get_photos, upload_photo
 from portraits.config import ROOT
 from portraits.huggingface import download_parent_model
+from portraits.image_generator import generate
 from portraits.io import CommandRunner
 from portraits.paths import make_model_path
 from portraits.paths import generated_photos_outdir
@@ -51,9 +52,12 @@ def pure_process_photos(run: CommandRunner, image_generator: io.ImageGenerator, 
     print(f"ℹ️  Processing {len(photos.photos)} photos")
     path = fetch_source(photos.source, run)
 
+
+    generate(photos, path)
+    return
     outdir = generated_photos_outdir()
     mkdir(outdir)
-    to_generate = [', '.join(p.prompts) for p in photos.photos]
+    to_generate = [p.prompt for p in photos.photos]
     image_generator([
             "--ddim_eta",
             "0.0",
